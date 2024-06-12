@@ -40,9 +40,6 @@ class GeneratorWithMemory(nn.Module):
         z = self.extractor.encoder(x)
         memory_z = self.memory(z)
         x = self.extractor.decoder(memory_z)
-
-        self.memory.update_mem(z)
-
         return x, z
 
 
