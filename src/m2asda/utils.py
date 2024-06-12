@@ -27,7 +27,7 @@ def clear_warnings(category=FutureWarning):
     return outwrapper
 
 
-def select_device(GPU: Union[bool, str] = True,):
+def select_device(GPU: Union[bool, str] = True):
     if GPU:
         if torch.cuda.is_available():
             if isinstance(GPU, str):
