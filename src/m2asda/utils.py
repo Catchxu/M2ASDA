@@ -53,7 +53,7 @@ def evaluate(y_true, y_score):
 
     roc_auc = metrics.roc_auc_score(y_true, y_score)
     ap = metrics.average_precision_score(y_true, y_score)
-    
+
     ratio = 100.0 * len(np.where(y_true == 0)[0]) / len(y_true)
     thres = np.percentile(y_score, ratio)
     y_pred = (y_score >= thres).astype(int)

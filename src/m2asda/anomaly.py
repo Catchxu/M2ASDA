@@ -1,5 +1,7 @@
 import argparse
 import numpy as np
+import pandas as pd
+import scanpy as sc
 import anndata as ad
 import torch
 import torch.nn as nn
@@ -9,13 +11,13 @@ from torch.optim.lr_scheduler import CosineAnnealingLR
 from tqdm import tqdm
 from typing import Dict, Any
 
-from .utils import seed_everything, select_device
+from .utils import seed_everything
 from .configs import AnomalyConfigs
 from .model import GeneratorWithMemory, Discriminator, GMMWithPrior
 
 
 class AnomalyModel:
-    # Training
+    # List attributes
     n_epochs: int
     batch_size: int
     learning_rate: float
@@ -23,8 +25,6 @@ class AnomalyModel:
     loss_weight: Dict[str, int]
     device: torch.device
     random_state: int
-
-    # Model
     n_genes: int
     g_configs: Dict[str, Any]
     d_configs: Dict[str, Any]
@@ -45,11 +45,6 @@ class AnomalyModel:
         # Initialize the attributes from configs
         for key, value in configs.__dict__.items():
             setattr(self, key, value)
-        
-        # Update n_genes
-        if 'n_genes' in kwargs:
-            self.g_configs['input_dim'] = kwargs['n_genes']
-            self.d_configs['input_dim'] = kwargs['n_genes']
 
         self._init_model()
 
@@ -185,7 +180,31 @@ class AnomalyModel:
 
 
 
-def update_configs(configs: AnomalyConfigs, args: argparse.Namespace):
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description="M2ASDA for anomaly detection.")
+    configs = AnomalyConfigs()
+
+    # Data path arguments
+    parser.add_argument('--ref_path', type=str, help='Path to the reference h5ad file')
+    parser.add_argument('--tgt_path', type=str, help='Path to the target h5ad file')
+    parser.add_argument('--save_path', type=str, default='result.csv', help='Path to the target h5ad file')    
+
+    # Module specific arguments with defaults from AnomalyConfigs
+    parser.add_argument('--n_epochs', type=int, default=configs.n_epochs, help='Number of epochs')
+    parser.add_argument('--batch_size', type=int, default=configs.batch_size, help='Batch size')
+    parser.add_argument('--learning_rate', type=float, default=configs.learning_rate, help='Learning rate')
+    parser.add_argument('--n_critic', type=int, default=configs.n_critic, help='Number of discriminator iterations per generator iteration')
+    parser.add_argument('--alpha', type=int, default=configs.alpha, help='Loss weight alpha')
+    parser.add_argument('--beta', type=int, default=configs.beta, help='Loss weight beta') 
+    parser.add_argument('--gamma', type=int, default=configs.gamma, help='Loss weight gamma') 
+    parser.add_argument('--lambda', type=int, default=configs.lamb, help='Loss weight lambda') 
+    parser.add_argument('--GPU', type=str, default=configs.GPU, help='GPU ID for training, e.g., cuda:0')
+    parser.add_argument('--random_state', type=int, default=configs.random_state, help='Random seed')
+    parser.add_argument('--n_genes', type=int, default=configs.n_genes, help='Number of genes')
+    parser.add_argument('--run_gmm', type=bool, default=True, help='Run GMM for obtaining binary label')
+
+    args = parser.parse_args()
+
     args_dict = vars(args)
     for key, value in args_dict.items():
         # Only update if the argument is provided and valid
@@ -193,25 +212,25 @@ def update_configs(configs: AnomalyConfigs, args: argparse.Namespace):
             setattr(configs, key, value)
 
     configs.update()
-    return configs
+    configs.clear()
 
+    # Print out all configurations to verify they are complete
+    for key, value in configs.__dict__.items():
+        print(f"{key} = {value}")
 
-def setting(configs: AnomalyConfigs):
-    parser = argparse.ArgumentParser(description="M2ASDA for anomaly detection.")
+    # Read the preprocessed data
+    ref = sc.read_h5ad(args_dict['ref_path'])
+    tgt = sc.read_h5ad(args_dict['tgt_path'])
 
-    # Data path arguments
-    parser.add_argument('--ref_path', type=str, help='Path to the reference h5ad file')
-    parser.add_argument('--tgt_path', type=str, help='Path to the target h5ad file')
+    # Initialize and train AnomalyModel
+    model = AnomalyModel(**configs.__dict__)
+    model.train(ref)
 
-    # Model specific arguments with defaults from AnomalyConfigs
-
-
-
-def main():
-    configs = AnomalyConfigs()
-
-
-
-
-if __name__ == '__main__':
-    main()
+    if args_dict['run_gmm']:
+        score, label = model.predict(tgt, True)
+        df = pd.DataFrame({'score': score, 'label': label}, index=tgt.obs_names)
+    else:
+        score = model.predict(tgt, False)
+        df = pd.DataFrame({'score': score}, index=tgt.obs_names)
+    
+    df.to_csv(args_dict['save_path'])
