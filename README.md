@@ -1,1 +1,3 @@
 # Detecting and subtyping anomalous single cells with M2ASDA
+
+To address the aforementioned challenges and limitations, we propose an innovative Generative Adverserial Network (GAN)-based framework named Multimodal and Multi-sample Anomalous Single-cell Detection and Annotation (M2ASDA). M2ASDA pioneers in using annotation-free, normal scRNA-seq dataset as reference to detect and subtype ASCs across multiple modalities and target samples. This approach integrates three essential tasks of DAASC(anomaly detection, alignment, and annotation) into a cohesive, three-phase pipeline.
