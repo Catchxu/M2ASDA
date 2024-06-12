@@ -1,3 +1,4 @@
+import argparse
 import numpy as np
 import anndata as ad
 import torch
@@ -8,7 +9,7 @@ from torch.optim.lr_scheduler import CosineAnnealingLR
 from tqdm import tqdm
 from typing import Dict, Any
 
-from .utils import seed_everything
+from .utils import seed_everything, select_device
 from .configs import AnomalyConfigs
 from .model import GeneratorWithMemory, Discriminator, GMMWithPrior
 
@@ -32,16 +33,18 @@ class AnomalyModel:
     def __init__(self, **kwargs):
         configs = AnomalyConfigs()
 
+        # Update configs with kwargs
+        for key, value in kwargs.items():
+            if hasattr(configs, key):
+                setattr(configs, key, value)
+            else:
+                raise AttributeError(f"{key} is not a valid attribute of Config")
+        
+        configs.update()
+
         # Initialize the attributes from configs
         for key, value in configs.__dict__.items():
             setattr(self, key, value)
-
-        # Update the attributes in kwargs
-        for key, value in kwargs.items():
-            if hasattr(self, key):
-                setattr(self, key, value)
-            else:
-                raise AttributeError(f"{key} is not a valid attribute of Config")
         
         # Update n_genes
         if 'n_genes' in kwargs:
@@ -178,3 +181,37 @@ class AnomalyModel:
     def normalize(self, score: np.ndarray):
         score = (score.max() - score)/(score.max() - score.min())
         return score.reshape(-1)
+
+
+
+
+def update_configs(configs: AnomalyConfigs, args: argparse.Namespace):
+    args_dict = vars(args)
+    for key, value in args_dict.items():
+        # Only update if the argument is provided and valid
+        if key in configs.__dict__ and value is not None: 
+            setattr(configs, key, value)
+
+    configs.update()
+    return configs
+
+
+def setting(configs: AnomalyConfigs):
+    parser = argparse.ArgumentParser(description="M2ASDA for anomaly detection.")
+
+    # Data path arguments
+    parser.add_argument('--ref_path', type=str, help='Path to the reference h5ad file')
+    parser.add_argument('--tgt_path', type=str, help='Path to the target h5ad file')
+
+    # Model specific arguments with defaults from AnomalyConfigs
+
+
+
+def main():
+    configs = AnomalyConfigs()
+
+
+
+
+if __name__ == '__main__':
+    main()
