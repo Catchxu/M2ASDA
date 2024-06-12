@@ -39,7 +39,7 @@ class GeneratorWithMemory(nn.Module):
 
         self.memory.update_mem(z)
 
-        return x
+        return x, z
 
 
 class GeneratorWithStyle(nn.Module):
