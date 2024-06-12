@@ -15,19 +15,16 @@ class AnomalyConfigs:
         self.n_genes = 3000
 
         # Model
-        self.ae_configs = {
+        self.g_configs = {
             'input_dim': self.n_genes,
             'hidden_dim': [1024, 512, 256],
             'latent_dim': 256,
-            'normalization': True,
-            'activation': True,
-            'dropout': 0.1
-        }
-
-        self.g_configs = {
             'memory_size': 512, 
             'threshold': 0.005,
-            'temperature': 0.1
+            'temperature': 0.1,
+            'normalization': True,
+            'activation': True,
+            'dropout': 0.1,
         }
 
         self.d_configs = {

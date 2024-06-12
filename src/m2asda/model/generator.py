@@ -1,4 +1,5 @@
 import torch.nn as nn
+from typing import Union, List
 from .layer import Encoder, Decoder, MemoryBlock, StyleBlock
 
 
@@ -14,12 +15,15 @@ class AutoEncoder(nn.Module):
 
 
 class GeneratorWithMemory(nn.Module):
-    def __init__(self, extractor: AutoEncoder, 
+    def __init__(self, input_dim: int,
+                 hidden_dim: Union[int, List[int]],
+                 latent_dim: int,
                  memory_size: int = 512, 
                  threshold: float = 0.005, 
-                 temperature: float = 0.1):
+                 temperature: float = 0.1,
+                 **kwargs):
         super().__init__()
-        self.extractor = extractor
+        self.extractor = AutoEncoder(input_dim, hidden_dim, latent_dim, **kwargs)
         self.memory = MemoryBlock(
             self.extractor.latent_dim, memory_size, threshold, temperature
         )
@@ -43,9 +47,13 @@ class GeneratorWithMemory(nn.Module):
 
 
 class GeneratorWithStyle(nn.Module):
-    def __init__(self, extractor: AutoEncoder, num_batches: int):
+    def __init__(self, input_dim: int,
+                 hidden_dim: Union[int, List[int]],
+                 latent_dim: int,
+                 num_batches: int,
+                 **kwargs):
         super().__init__()
-        self.extractor = extractor
+        self.extractor = AutoEncoder(input_dim, hidden_dim, latent_dim, **kwargs)
         self.style = StyleBlock(num_batches, self.extractor.latent_dim)        
 
         # Additional initialization

@@ -5,7 +5,7 @@ from typing import Dict, Any
 
 from .utils import seed_everything
 from .configs import AnomalyConfigs
-from .model import AutoEncoder, GeneratorWithMemory, Discriminator
+from .model import GeneratorWithMemory, Discriminator
 
 
 class AnomalyModel:
@@ -22,11 +22,13 @@ class AnomalyModel:
     n_genes: int
 
     # Model
-    ae_configs: Dict[str, Any]
     g_configs: Dict[str, Any]
     d_configs: Dict[str, Any]
 
-    def __init__(self, configs: AnomalyConfigs, **kwargs):
+    def __init__(self, **kwargs):
+        configs = AnomalyConfigs()
+
+        # Initialize the attributes from configs
         for key, value in configs.__dict__.items():
             setattr(self, key, value)
 
@@ -37,8 +39,9 @@ class AnomalyModel:
             else:
                 raise AttributeError(f"{key} is not a valid attribute of Config")
         
+        # Update n_genes
         if 'n_genes' in kwargs:
-            self.ae_configs['input_dim'] = kwargs['n_genes']
+            self.g_configs['input_dim'] = kwargs['n_genes']
             self.d_configs['input_dim'] = kwargs['n_genes']
 
         self._init_model()
@@ -46,8 +49,7 @@ class AnomalyModel:
         seed_everything(self.random_state)
     
     def _init_model(self):
-        model = AutoEncoder(**self.ae_configs)
-        self.G = GeneratorWithMemory(model, **self.g_configs).to(self.device)
+        self.G = GeneratorWithMemory(**self.g_configs).to(self.device)
         self.D = Discriminator(**self.d_configs).to(self.device) 
 
         self.opt_G = optim.Adam(self.G.parameters(), lr=self.learning_rate, betas=(0.5, 0.999))     
