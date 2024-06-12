@@ -12,9 +12,8 @@ class AnomalyConfigs:
         self.device = select_device('cuda:0')
         self.random_state = 2024
 
-        self.n_genes = 3000
-
         # Model
+        self.n_genes = 3000
         self.g_configs = {
             'input_dim': self.n_genes,
             'hidden_dim': [1024, 512, 256],

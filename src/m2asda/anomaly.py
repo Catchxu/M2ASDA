@@ -14,7 +14,6 @@ from .model import GeneratorWithMemory, Discriminator, GMMWithPrior
 
 
 class AnomalyModel:
-
     # Training
     n_epochs: int
     batch_size: int
@@ -24,9 +23,8 @@ class AnomalyModel:
     device: torch.device
     random_state: int
 
-    n_genes: int
-
     # Model
+    n_genes: int
     g_configs: Dict[str, Any]
     d_configs: Dict[str, Any]
     gmm_configs: Dict[str, Any]
