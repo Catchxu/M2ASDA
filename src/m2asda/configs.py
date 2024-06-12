@@ -35,3 +35,10 @@ class AnomalyConfigs:
             'activation': True,
             'dropout': 0.1            
         }
+
+        self.gmm_configs = {
+            'random_state': 1024,
+            'max_iter': 100,
+            'tol': 1e-5,
+            'prior_beta': [1, 10]
+        }

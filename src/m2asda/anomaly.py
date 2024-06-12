@@ -10,7 +10,7 @@ from typing import Dict, Any
 
 from .utils import seed_everything
 from .configs import AnomalyConfigs
-from .model import GeneratorWithMemory, Discriminator
+from .model import GeneratorWithMemory, Discriminator, GMMWithPrior
 
 
 class AnomalyModel:
@@ -29,6 +29,7 @@ class AnomalyModel:
     # Model
     g_configs: Dict[str, Any]
     d_configs: Dict[str, Any]
+    gmm_configs: Dict[str, Any]
 
     def __init__(self, **kwargs):
         configs = AnomalyConfigs()
@@ -105,13 +106,16 @@ class AnomalyModel:
         ref_score = self.score(self.loader)
         tgt_score = self.score(loader)
 
+        tqdm.write('Anomalous spots have been detected.\n')
 
+        if run_gmm:
+            gmm = GMMWithPrior(ref_score, **self.gmm_configs)
+            threshold = gmm.fit(tgt_score=tgt_score)
+            tgt_label = [1 if s >= threshold else 0 for s in tgt_score]
+            return tgt_score, tgt_label
+        else:
+            return tgt_score
 
-        
-
-  
-
-    
     def UpdateG(self, data):
         fake_data, z = self.G(data)
         _, fake_z = self.G(fake_data)
