@@ -35,7 +35,7 @@ class LinearBlock(nn.Module):
 
 
 class Encoder(nn.Module):
-    def __init__(self, input_dim, hidden_dim=[1024, 512, 256], latent_dim=256, **kwargs):
+    def __init__(self, input_dim, hidden_dim, latent_dim, **kwargs):
         super().__init__()
         layers = []
 
@@ -53,7 +53,7 @@ class Encoder(nn.Module):
 
 
 class Decoder(nn.Module):
-    def __init__(self, input_dim, hidden_dim=[1024, 512, 256], latent_dim=256, **kwargs):
+    def __init__(self, input_dim, hidden_dim, latent_dim, **kwargs):
         super().__init__()
         layers = []
 
@@ -71,9 +71,9 @@ class Decoder(nn.Module):
 
 
 class MemoryBlock(nn.Module):
-    def __init__(self, mem_dim, latent_dim, threshold=0.005, temperature=0.5):
+    def __init__(self, latent_dim, memory_size, threshold, temperature):
         super().__init__()
-        self.mem_dim = mem_dim
+        self.mem_dim = memory_size
         self.z_dim = latent_dim
         self.shrink_thres = threshold
         self.temperature = temperature
@@ -116,10 +116,10 @@ class MemoryBlock(nn.Module):
 
 
 class StyleBlock(nn.Module):
-    def __init__(self, num_batches: int, z_dim: int):
+    def __init__(self, num_batches: int, latent_dim: int):
         super().__init__()
         self.n = num_batches
-        self.style = nn.Parameter(torch.Tensor(num_batches, z_dim))
+        self.style = nn.Parameter(torch.Tensor(num_batches, latent_dim))
         self._init_parameters()
 
     def _init_parameters(self):
