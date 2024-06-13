@@ -2,7 +2,8 @@ import anndata as ad
 import torch
 import torch.nn as nn
 import torch.optim as optim
-from torch.utils.data import DataLoader
+import torch.nn.functional as F
+from torch.utils.data import Dataset, DataLoader
 from torch.optim.lr_scheduler import CosineAnnealingLR
 from typing import Dict, Any, List
 from tqdm import tqdm
@@ -10,6 +11,21 @@ from tqdm import tqdm
 from .utils import seed_everything
 from .model import GeneratorWithMemory, GeneratorWithPairs, Discriminator
 from .configs import PairConfigs
+
+
+class PairDataset(Dataset):
+    def __init__(self, ref_data, tgt_data):
+        self.ref_data = ref_data
+        self.tgt_data = tgt_data
+
+    def __len__(self):
+        return len(self.ref_data)
+
+    def __getitem__(self, index):
+        ref_sample = self.ref_data[index]
+        tgt_sample = self.tgt_data[index]
+
+        return {'ref': ref_sample, 'tgt': tgt_sample}
 
 
 class PairModel:
@@ -74,7 +90,16 @@ class PairModel:
                 for _ in range(self.n_critic):
                     self.UpdateD(ref_data, tgt_data)
 
-                self.UpdateG(ref_data, tgt_data)       
+                self.UpdateG(ref_data, tgt_data)
+
+                t.set_postfix(G_Loss = self.G_loss.item(),
+                              D_Loss = self.D_loss.item())
+                t.update(1)
+
+        P_matrix = F.relu(self.G.P).detach().cpu().numpy()
+        idx = list(ref.obs_names[P_matrix.argmax(axis=1)])
+        ref_pair = ref[idx]
+        return PairDataset(ref_pair, tgt)
 
     def check(self, ref: ad.AnnData, tgt: ad.AnnData):
         if self.n_ref != ref.n_obs:
@@ -87,7 +112,7 @@ class PairModel:
             raise AttributeError(f"ref and tgt have different genes")
     
     def UpdateG(self, ref_data, tgt_data):
-        fake_z_tgt, z_tgt, _ = self.G(ref_data, tgt_data)
+        fake_z_tgt, z_tgt = self.G(ref_data, tgt_data)
 
         # Discriminator provides feedback
         d = self.D(fake_z_tgt)
@@ -99,7 +124,7 @@ class PairModel:
         self.opt_G.step()
 
     def UpdateD(self, ref_data, tgt_data):
-        fake_z_tgt, z_tgt, _ = self.G(ref_data, tgt_data)
+        fake_z_tgt, z_tgt = self.G(ref_data, tgt_data)
         z_tgt = z_tgt.detach()
         fake_z_tgt = fake_z_tgt.detach()
 

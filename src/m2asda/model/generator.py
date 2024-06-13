@@ -66,7 +66,7 @@ class GeneratorWithPairs(nn.Module):
         z_ref = self.G(x_ref)
         z_tgt = self.G(x_tgt)
         fake_z_tgt = torch.mm(F.relu(self.P), z_ref)
-        return fake_z_tgt, z_tgt, F.relu(self.P).detach().cpu().numpy()
+        return fake_z_tgt, z_tgt
 
 
 class GeneratorWithStyle(nn.Module):
