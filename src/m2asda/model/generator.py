@@ -1,4 +1,7 @@
+import math
+import torch
 import torch.nn as nn
+import torch.nn.functional as F
 from typing import Union, List
 from .layer import Encoder, Decoder, MemoryBlock, StyleBlock
 
@@ -41,6 +44,29 @@ class GeneratorWithMemory(nn.Module):
         memory_z = self.memory(z)
         x = self.extractor.decoder(memory_z)
         return x, z
+
+
+class GeneratorWithPairs(nn.Module):
+    def __init__(self, generator: GeneratorWithMemory, n_ref: int, n_tgt: int):
+        super().__init__()
+        self.G = generator
+
+        # Freeze the parameters in trained generator
+        for param in self.G.parameters():
+            param.requires_grad = False
+        
+        self.P = nn.Parameter(torch.Tensor(n_tgt, n_ref))
+        self.reset_parameters()
+
+    def reset_parameters(self):
+        stdv = 1. / math.sqrt(self.P.size(1))
+        self.P.data.uniform_(-stdv, stdv)
+
+    def forward(self, x_ref, x_tgt):
+        z_ref = self.G(x_ref)
+        z_tgt = self.G(x_tgt)
+        fake_z_tgt = torch.mm(F.relu(self.P), z_ref)
+        return fake_z_tgt, z_tgt, F.relu(self.P).detach().cpu().numpy()
 
 
 class GeneratorWithStyle(nn.Module):

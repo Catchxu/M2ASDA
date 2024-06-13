@@ -58,3 +58,29 @@ class AnomalyConfigs:
         delattr(self, 'beta')
         delattr(self, 'gamma')
         delattr(self, 'lamb')
+
+
+class PairConfigs:
+    def __init__(self):
+        self.n_epochs = 1000
+        self.learning_rate = 1e-4
+        self.n_critic = 3
+        self.alpha = 30
+        self.beta = 1
+        self.lamb = 10
+        self.GPU = 'cuda:0'
+        self.random_state = 2024
+        self.n_genes = 3000
+
+    def update(self):
+        self.device = select_device(self.GPU)
+
+        self.loss_weight = {
+            'alpha': self.alpha, 'beta': self.beta, 'gamma': self.gamma, 'lambda': self.lamb
+        }
+    
+    def clear(self):
+        delattr(self, 'GPU')
+        delattr(self, 'alpha')
+        delattr(self, 'beta')
+        delattr(self, 'lamb')        
