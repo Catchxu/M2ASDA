@@ -91,4 +91,54 @@ class PairConfigs:
         delattr(self, 'GPU')
         delattr(self, 'alpha')
         delattr(self, 'beta')
-        delattr(self, 'lamb')        
+        delattr(self, 'lamb')
+
+
+class CorrectConfigs:
+    def __init__(self):
+        self.n_epochs = 50
+        self.batch_size = 256
+        self.learning_rate = 1e-4
+        self.n_critic = 3
+        self.alpha = 40
+        self.beta = 1
+        self.lamb = 10
+        self.GPU = 'cuda:0'
+        self.random_state = 2024
+        self.n_genes = 3000
+
+    def build(self):
+        self.device = select_device(self.GPU)
+
+        self.loss_weight = {
+            'alpha': self.alpha, 'beta': self.beta, 'lambda': self.lamb
+        }
+
+        self.g_configs = {
+            'input_dim': self.n_genes,
+            'hidden_dim': [1024, 512, 256],
+            'latent_dim': 256,
+            'memory_size': 512, 
+            'threshold': 0.005,
+            'temperature': 0.1,
+            'normalization': True,
+            'activation': True,
+            'dropout': 0.1,
+        }
+
+        self.d_configs = {
+            'input_dim': self.n_genes,
+            'hidden_dim': [1024, 512, 256],
+            'latent_dim': 256,
+            'normalization': True,
+            'activation': True,
+            'dropout': 0.1            
+        }
+
+    def clear(self):
+        delattr(self, 'GPU')
+        delattr(self, 'alpha')
+        delattr(self, 'beta')
+        delattr(self, 'lamb')
+
+
