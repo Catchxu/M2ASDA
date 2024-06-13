@@ -142,3 +142,24 @@ class CorrectConfigs:
         delattr(self, 'lamb')
 
 
+class SubtypeConfigs:
+    def __init__(self):
+        self.n_epochs = 1000
+        self.batch_size = 128
+        self.learning_rate = 1e-4
+        self.weight_decay = 1e-4
+        self.GPU = 'cuda:0'
+        self.random_state = 2024
+        self.n_genes = 3000
+    
+    def build(self):
+        self.device = select_device(self.GPU)
+
+        self.s_configs = {
+            'alpha': 1,
+            'KMeans_n_init': 20,
+            'num_layers': 3,
+            'nheads': 4,
+            'hidden_dim': 512,
+            'dropout': 0.1
+        }

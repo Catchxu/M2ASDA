@@ -1,4 +1,3 @@
-import copy
 import numpy as np
 import pandas as pd
 import torch
@@ -23,7 +22,7 @@ class Subtyper(nn.Module):
                  ):
         super().__init__()
 
-        self.G = copy.deepcopy(generator)
+        self.G = generator
         self.z_dim = self.G.extractor.latent_dim
         self.num_types = num_types
         self.alpha = alpha
