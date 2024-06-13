@@ -268,4 +268,34 @@ if __name__ == '__main__':
     p_configs = PairConfigs()
     c_configs = CorrectConfigs()
 
+    # Data path arguments
+    data_group = parser.add_argument_group('Data Parameters')
+    data_group.add_argument('--read_path', type=List[str], help='Path to the multiple h5ad files')
+    data_group.add_argument('--save_path', type=str, default='correct.h5ad', help='Path to the corrected and merged h5ad file')
 
+    # PairModel arguments with defaults from AnomalyConfigs
+    p_group = parser.add_argument_group('PairModel Parameters')
+    p_group.add_argument('--n_epochs_p', type=int, default=p_configs.n_epochs, help='Number of epochs')
+    p_group.add_argument('--learning_rate_p', type=float, default=p_configs.learning_rate, help='Learning rate')
+    p_group.add_argument('--n_critic_p', type=int, default=p_configs.n_critic, help='Number of discriminator iterations per generator iteration')
+    p_group.add_argument('--alpha_p', type=int, default=p_configs.alpha, help='Loss weight alpha')
+    p_group.add_argument('--beta_p', type=int, default=p_configs.beta, help='Loss weight beta') 
+    p_group.add_argument('--lambda_p', type=int, default=p_configs.lamb, help='Loss weight lambda') 
+    p_group.add_argument('--GPU_p', type=str, default=p_configs.GPU, help='GPU ID for training, e.g., cuda:0')
+    p_group.add_argument('--random_state_p', type=int, default=p_configs.random_state, help='Random seed')
+    p_group.add_argument('--n_genes_p', type=int, default=p_configs.n_genes, help='Number of genes')
+
+    # CorrectModel arguments with defaults from AnomalyConfigs
+    c_group = parser.add_argument_group('CorrectModel Parameters')
+    c_group.add_argument('--n_epochs_c', type=int, default=c_configs.n_epochs, help='Number of epochs')
+    c_group.add_argument('--batch_size_c', type=int, default=c_configs.batch_size, help='Number of epochs')
+    c_group.add_argument('--learning_rate_c', type=float, default=c_configs.learning_rate, help='Learning rate')
+    c_group.add_argument('--n_critic_c', type=int, default=c_configs.n_critic, help='Number of discriminator iterations per generator iteration')
+    c_group.add_argument('--alpha_c', type=int, default=c_configs.alpha, help='Loss weight alpha')
+    c_group.add_argument('--beta_c', type=int, default=c_configs.beta, help='Loss weight beta') 
+    c_group.add_argument('--lambda_c', type=int, default=c_configs.lamb, help='Loss weight lambda') 
+    c_group.add_argument('--GPU_c', type=str, default=c_configs.GPU, help='GPU ID for training, e.g., cuda:0')
+    c_group.add_argument('--random_state_c', type=int, default=c_configs.random_state, help='Random seed')
+    c_group.add_argument('--n_genes_c', type=int, default=c_configs.n_genes, help='Number of genes')
+
+    args = parser.parse_args()
