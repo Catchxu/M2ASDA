@@ -1,3 +1,4 @@
+import argparse
 import anndata as ad
 import torch
 import torch.nn as nn
@@ -258,3 +259,13 @@ class CorrectModel:
         self.opt_D.zero_grad()
         self.D_loss.backward()
         self.opt_D.step()
+
+
+
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description="M2ASDA for batch correction.")
+    p_configs = PairConfigs()
+    c_configs = CorrectConfigs()
+
+
