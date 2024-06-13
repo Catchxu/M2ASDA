@@ -17,7 +17,7 @@ class AnomalyConfigs:
 
         self.update()
     
-    def update(self):
+    def build(self):
         self.device = select_device(self.GPU)
 
         self.loss_weight = {
@@ -73,7 +73,7 @@ class PairConfigs:
         self.n_genes = 3000
         self.latent_dim = 256
 
-    def update(self):
+    def build(self):
         self.device = select_device(self.GPU)
 
         self.loss_weight = {

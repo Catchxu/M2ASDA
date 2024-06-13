@@ -49,7 +49,7 @@ class PairModel:
             else:
                 raise AttributeError(f"{key} is not a valid attribute of Config")
         
-        configs.update()
+        configs.build()
 
         # Initialize the attributes from configs
         for key, value in configs.__dict__.items():

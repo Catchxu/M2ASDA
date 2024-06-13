@@ -40,7 +40,7 @@ class AnomalyModel:
             else:
                 raise AttributeError(f"{key} is not a valid attribute of Config")
         
-        configs.update()
+        configs.build()
 
         # Initialize the attributes from configs
         for key, value in configs.__dict__.items():
@@ -211,7 +211,7 @@ if __name__ == '__main__':
         if key in configs.__dict__ and value is not None: 
             setattr(configs, key, value)
 
-    configs.update()
+    configs.build()
     configs.clear()
 
     # Print out all configurations to verify they are complete
