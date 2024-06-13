@@ -163,3 +163,6 @@ class SubtypeConfigs:
             'hidden_dim': 512,
             'dropout': 0.1
         }
+
+    def clear(self):
+        delattr(self, 'GPU')

@@ -108,3 +108,40 @@ class SubtypeModel:
         fake_data, z = self.G(data)
         res = data - fake_data.detach()
         return z, res
+
+
+
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description="M2ASDA for anomaly subtyping.")
+    configs = SubtypeConfigs()
+
+    # Data path arguments
+    data_group = parser.add_argument_group('Data Parameters')
+    data_group.add_argument('--read_path', type=str, help='Path to read the h5ad file')
+    data_group.add_argument('--save_path', type=str, default='result.csv', help='Path to save output csv file')
+    data_group.add_argument('--pth_path', type=str, required=True, help='Path to read the trained generator')
+
+    # SubtypeModel arguments with defaults from SubtypeConfigs
+    s_group = parser.add_argument_group('AnomalyModel Parameters')
+    s_group.add_argument('--n_epochs', type=int, default=configs.n_epochs, help='Number of epochs')
+    s_group.add_argument('--batch_size', type=int, default=configs.batch_size, help='Batch size')
+    s_group.add_argument('--learning_rate', type=float, default=configs.learning_rate, help='Learning rate')
+    s_group.add_argument('--weight_decay', type=float, default=configs.weight_decay, help='Weight decay rate')
+    s_group.add_argument('--GPU', type=str, default=configs.GPU, help='GPU ID for training, e.g., cuda:0')
+    s_group.add_argument('--random_state', type=int, default=configs.random_state, help='Random seed')
+    s_group.add_argument('--n_genes', type=int, default=configs.n_genes, help='Number of genes')
+
+    args = parser.parse_args()
+
+    # Update the configs with command line argument
+    args_dict = vars(args)
+    update_configs_with_args(configs, args_dict, None)
+
+    configs.build()
+    configs.clear()
+
+    # Print out all configurations to verify they are complete
+    print("=============== SubtypeModel Parameters ===============")
+    for key, value in configs.__dict__.items():
+        print(f"{key} = {value}")
