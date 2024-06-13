@@ -1,4 +1,5 @@
 import argparse
+import scanpy as sc
 import anndata as ad
 import torch
 import torch.nn as nn
@@ -9,7 +10,7 @@ from torch.optim.lr_scheduler import CosineAnnealingLR
 from typing import Dict, Any, List
 from tqdm import tqdm
 
-from .utils import seed_everything
+from .utils import seed_everything, update_configs_with_args
 from .model import GeneratorWithMemory, GeneratorWithPairs, Discriminator, GeneratorWithStyle
 from .configs import PairConfigs, CorrectConfigs
 
@@ -270,8 +271,9 @@ if __name__ == '__main__':
 
     # Data path arguments
     data_group = parser.add_argument_group('Data Parameters')
-    data_group.add_argument('--read_path', type=List[str], help='Path to the multiple h5ad files')
-    data_group.add_argument('--save_path', type=str, default='correct.h5ad', help='Path to the corrected and merged h5ad file')
+    data_group.add_argument('--read_path', type=List[str], help='Path to read multiple h5ad files')
+    data_group.add_argument('--save_path', type=str, default='correct.h5ad', help='Path to save corrected and merged h5ad file')
+    data_group.add_argument('--pth_path', type=str, required=True, help='Path to read the trained generator')
 
     # PairModel arguments with defaults from AnomalyConfigs
     p_group = parser.add_argument_group('PairModel Parameters')
@@ -299,3 +301,48 @@ if __name__ == '__main__':
     c_group.add_argument('--n_genes_c', type=int, default=c_configs.n_genes, help='Number of genes')
 
     args = parser.parse_args()
+
+    # Update the configs with command line argument
+    args_dict = vars(args)
+    update_configs_with_args(p_configs, args_dict, '_p')
+    update_configs_with_args(c_configs, args_dict, '_c')
+
+    p_configs.build()
+    p_configs.clear()
+
+    c_configs.build()
+    c_configs.clear()
+
+    # Print out all configurations to verify they are complete
+    print("=============== PairModel Parameters ===============")
+    for key, value in p_configs.__dict__.items():
+        print(f"{key} = {value}")
+    
+    print('\n')
+
+    print("=============== CorrectModel Parameters ===============")
+    for key, value in c_configs.__dict__.items():
+        print(f"{key} = {value}")
+    
+    # Read the preprocessed data
+    adata_list = []
+    for path in args_dict['read_path']:
+        adata = sc.read_h5ad(path)
+        adata_list.append(adata)
+    
+    # Load the trained GeneratorWithMemory
+    generator = torch.load(args_dict['pth_path'])
+
+    # Initialize and train PairModel
+    ref = adata_list[0]
+    tgt = ad.concat(adata_list[1:])
+    model = PairModel(generator, ref.n_obs, tgt.n_obs, **p_configs.__dict__)
+    dataset = model.train(ref, tgt)
+
+    # Initialize and train CorrectModel
+    num_batches = len(adata_list) - 1
+    model = CorrectModel(num_batches, **c_configs.__dict__)
+    adata = model.train(adata_list, dataset)
+
+    adata.write_h5ad(args_dict['save_path'])
+    

@@ -9,9 +9,9 @@ import torch.optim as optim
 from torch.utils.data import DataLoader
 from torch.optim.lr_scheduler import CosineAnnealingLR
 from tqdm import tqdm
-from typing import Dict, Any
+from typing import Dict, Any, Optional
 
-from .utils import seed_everything
+from .utils import seed_everything, update_configs_with_args
 from .configs import AnomalyConfigs
 from .model import GeneratorWithMemory, Discriminator, GMMWithPrior
 
@@ -186,9 +186,10 @@ if __name__ == '__main__':
 
     # Data path arguments
     data_group = parser.add_argument_group('Data Parameters')
-    data_group.add_argument('--ref_path', type=str, help='Path to the reference h5ad file')
-    data_group.add_argument('--tgt_path', type=str, help='Path to the target h5ad file')
-    data_group.add_argument('--save_path', type=str, default='result.csv', help='Path to the output csv file')    
+    data_group.add_argument('--ref_path', type=str, help='Path to read the reference h5ad file')
+    data_group.add_argument('--tgt_path', type=str, help='Path to read the target h5ad file')
+    data_group.add_argument('--result_path', type=str, default='result.csv', help='Path to save the output csv file')
+    data_group.add_argument('--pth_path', type=Optional[str], default=None, help='Path to save the trained generator')
 
     # Module specific arguments with defaults from AnomalyConfigs
     AD_group = parser.add_argument_group('AnomalyModel Parameters')
@@ -207,16 +208,15 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
 
+    # Update the configs with command line argument
     args_dict = vars(args)
-    for key, value in args_dict.items():
-        # Only update if the argument is provided and valid
-        if key in configs.__dict__ and value is not None: 
-            setattr(configs, key, value)
+    update_configs_with_args(configs, args_dict, None)
 
     configs.build()
     configs.clear()
 
     # Print out all configurations to verify they are complete
+    print("=============== AnomalyModel Parameters ===============")
     for key, value in configs.__dict__.items():
         print(f"{key} = {value}")
 
@@ -236,3 +236,6 @@ if __name__ == '__main__':
         df = pd.DataFrame({'score': score}, index=tgt.obs_names)
     
     df.to_csv(args_dict['save_path'])
+
+    if args_dict['pth_path'] is not None:
+        torch.save(model.G, args_dict['pth_path'])
