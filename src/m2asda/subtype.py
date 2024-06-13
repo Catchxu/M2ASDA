@@ -1,4 +1,5 @@
 import argparse
+import pandas as pd
 import scanpy as sc
 import anndata as ad
 import torch
@@ -100,7 +101,7 @@ class SubtypeModel:
         with torch.no_grad():
             self.S.eval()
             _, q = self.S(z, res)
-            return q
+            return torch.argmax(q, dim=1).detach().cpu().numpy()
 
     @torch.no_grad()
     def generate_z_res(self, data: torch.Tensor):
@@ -131,6 +132,7 @@ if __name__ == '__main__':
     s_group.add_argument('--GPU', type=str, default=configs.GPU, help='GPU ID for training, e.g., cuda:0')
     s_group.add_argument('--random_state', type=int, default=configs.random_state, help='Random seed')
     s_group.add_argument('--n_genes', type=int, default=configs.n_genes, help='Number of genes')
+    s_group.add_argument('--num_types', type=int, required=True, help='Number of anomaly subtypes')    
 
     args = parser.parse_args()
 
@@ -145,3 +147,16 @@ if __name__ == '__main__':
     print("=============== SubtypeModel Parameters ===============")
     for key, value in configs.__dict__.items():
         print(f"{key} = {value}")
+
+    # Read the preprocessed data
+    adata = sc.read_h5ad(args_dict['read_path'])
+
+    # Load the trained GeneratorWithMemory
+    generator = torch.load(args_dict['pth_path'])
+
+    # Initialize and train SubtypeModel
+    model = SubtypeModel(generator, args_dict['num_types'], **configs.__dict__)
+    sublabel = model.train(adata)
+
+    df = pd.DataFrame({'subtype': sublabel}, index=adata.obs_names)
+    df.to_csv(args_dict['save_path'])
