@@ -14,8 +14,6 @@ class AnomalyConfigs:
         self.GPU = 'cuda:0'
         self.random_state = 2024
         self.n_genes = 3000
-
-        self.update()
     
     def build(self):
         self.device = select_device(self.GPU)
