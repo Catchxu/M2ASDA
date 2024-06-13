@@ -71,12 +71,22 @@ class PairConfigs:
         self.GPU = 'cuda:0'
         self.random_state = 2024
         self.n_genes = 3000
+        self.latent_dim = 256
 
     def update(self):
         self.device = select_device(self.GPU)
 
         self.loss_weight = {
             'alpha': self.alpha, 'beta': self.beta, 'gamma': self.gamma, 'lambda': self.lamb
+        }
+
+        self.d_configs = {
+            'input_dim': self.latent_dim,
+            'hidden_dim': [256, 256],
+            'latent_dim': 256,
+            'normalization': True,
+            'activation': True,
+            'dropout': 0.1            
         }
     
     def clear(self):
