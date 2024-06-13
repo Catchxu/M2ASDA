@@ -187,7 +187,7 @@ if __name__ == '__main__':
     # Data path arguments
     parser.add_argument('--ref_path', type=str, help='Path to the reference h5ad file')
     parser.add_argument('--tgt_path', type=str, help='Path to the target h5ad file')
-    parser.add_argument('--save_path', type=str, default='result.csv', help='Path to the target h5ad file')    
+    parser.add_argument('--save_path', type=str, default='result.csv', help='Path to the output csv file')    
 
     # Module specific arguments with defaults from AnomalyConfigs
     parser.add_argument('--n_epochs', type=int, default=configs.n_epochs, help='Number of epochs')
