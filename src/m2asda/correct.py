@@ -27,7 +27,7 @@ class PairDataset(Dataset):
         ref_sample = self.ref_data[index]
         tgt_sample = self.tgt_data[index]
 
-        return {'ref': ref_sample, 'tgt': tgt_sample}
+        return ref_sample, tgt_sample
 
 
 class PairModel:
@@ -201,9 +201,9 @@ class CorrectModel:
             for _ in range(self.n_epochs):
                 t.set_description('Training Epochs')
 
-                for data in self.loader:
-                    ref_data = data['ref'].to(self.device)
-                    tgt_data = data['tgt'].to(self.device)
+                for ref_data, tgt_data in self.loader:
+                    ref_data = ref_data.to(self.device)
+                    tgt_data = tgt_data.to(self.device)
 
                     for _ in range(self.n_critic):
                         self.UpdateD(ref_data, tgt_data)
