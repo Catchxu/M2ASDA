@@ -5,26 +5,14 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 import torch.nn.functional as F
-from torch.utils.data import Dataset, DataLoader
+from torch.utils.data import DataLoader
 from torch.optim.lr_scheduler import CosineAnnealingLR
 from typing import Dict, Any, List
 from tqdm import tqdm
 
-from .utils import seed_everything, update_configs_with_args
+from .utils import seed_everything, update_configs_with_args, PairDataset
 from .model import GeneratorWithMemory, Subtyper
 from .configs import SubtypeConfigs
-
-
-class PairedDataset(Dataset):
-    def __init__(self, z, res):
-        self.z = z
-        self.res = res
-
-    def __len__(self):
-        return len(self.z)
-
-    def __getitem__(self, idx):
-        return self.z[idx], self.res[idx]
 
 
 class SubtypeModel:
@@ -70,7 +58,7 @@ class SubtypeModel:
         z, res = self.generate_z_res(data)
 
         self.S.mu_init(z.cpu().detach().numpy())
-        dataset = PairedDataset(z, res)
+        dataset = PairDataset(z, res)
         self.loader = DataLoader(dataset, batch_size=self.batch_size, shuffle=True,
                                  num_workers=4, pin_memory=True, drop_last=False)
 

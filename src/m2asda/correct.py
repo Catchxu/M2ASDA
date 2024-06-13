@@ -10,24 +10,9 @@ from torch.optim.lr_scheduler import CosineAnnealingLR
 from typing import Dict, Any, List
 from tqdm import tqdm
 
-from .utils import seed_everything, update_configs_with_args
+from .utils import seed_everything, update_configs_with_args, PairDataset
 from .model import GeneratorWithMemory, GeneratorWithPairs, Discriminator, GeneratorWithStyle
 from .configs import PairConfigs, CorrectConfigs
-
-
-class PairDataset(Dataset):
-    def __init__(self, ref_data, tgt_data):
-        self.ref_data = ref_data
-        self.tgt_data = tgt_data
-
-    def __len__(self):
-        return len(self.ref_data)
-
-    def __getitem__(self, index):
-        ref_sample = self.ref_data[index]
-        tgt_sample = self.tgt_data[index]
-
-        return ref_sample, tgt_sample
 
 
 class PairModel:
@@ -108,13 +93,13 @@ class PairModel:
 
     def check(self, ref: ad.AnnData, tgt: ad.AnnData):
         if self.n_ref != ref.n_obs:
-            raise AttributeError(f"Number of cells in ref is different with n_ref")
+            raise RuntimeError(f"Number of cells in ref is different with n_ref")
 
         if self.n_tgt != tgt.n_obs:
-            raise AttributeError(f"Number of cells in tgt is different with n_tgt")
+            raise RuntimeError(f"Number of cells in tgt is different with n_tgt")
         
         if ref.var_names != tgt.var_names:
-            raise AttributeError(f"ref and tgt have different genes")
+            raise RuntimeError(f"ref and tgt have different genes")
     
     def UpdateG(self, ref_data, tgt_data):
         fake_z_tgt, z_tgt = self.G(ref_data, tgt_data)

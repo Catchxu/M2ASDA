@@ -5,6 +5,7 @@ import numpy as np
 import pandas as pd
 from sklearn import metrics
 from typing import Union, Dict, Any
+from torch.utils.data import Dataset
 
 
 def seed_everything(seed):
@@ -72,3 +73,21 @@ def evaluate(y_true, y_score):
     _, _, f1, _ = metrics.precision_recall_fscore_support(y_true, y_pred, average='binary')
 
     return roc_auc, ap, f1
+
+
+class PairDataset(Dataset):
+    def __init__(self, DataA, DataB):
+        self.DataA = DataA
+        self.DataB = DataB
+
+        if len(self.DataA) != len(self.DataB):
+            raise RuntimeError('Input data can not be paired')
+
+    def __len__(self):
+        return len(self.DataA)
+
+    def __getitem__(self, index):
+        A_sample = self.DataA[index]
+        B_sample = self.DataB[index]
+
+        return A_sample, B_sample
