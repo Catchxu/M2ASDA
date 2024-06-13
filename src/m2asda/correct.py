@@ -83,6 +83,9 @@ class PairModel:
                 t.set_postfix(G_Loss = self.G_loss.item(),
                               D_Loss = self.D_loss.item())
                 t.update(1)
+    
+                self.sch_G.step()
+                self.sch_D.step()
 
         P_matrix = F.relu(self.G.P).detach().cpu().numpy()
         idx = list(ref.obs_names[P_matrix.argmax(axis=1)])
@@ -198,6 +201,9 @@ class CorrectModel:
                 t.set_postfix(G_Loss = self.G_loss.item(),
                               D_Loss = self.D_loss.item())
                 t.update(1)
+
+                self.sch_G.step()
+                self.sch_D.step()
         
         # Generate data without batch effects
         adata = ad.concat(raw_data)

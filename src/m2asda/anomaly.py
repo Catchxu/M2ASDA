@@ -88,6 +88,9 @@ class AnomalyModel:
                 t.set_postfix(G_Loss = self.G_loss.item(),
                               D_Loss = self.D_loss.item())
                 t.update(1)
+
+                self.sch_G.step()
+                self.sch_D.step()
         
         tqdm.write('Training has been finished.\n')
 

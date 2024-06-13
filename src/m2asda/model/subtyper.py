@@ -56,12 +56,6 @@ class Subtyper(nn.Module):
         z = self.fusion(z, res_z)
         return self.classifer(z)
 
-    def loss_function(self, p, q):
-        def kld(target, pred):
-            return torch.mean(torch.sum(target*torch.log(target/(pred+1e-6)), dim=1))
-        loss = kld(p, q)
-        return loss
-
     def target_distribution(self, q):
         p = q**2 / torch.sum(q, dim=0)
         p = p / torch.sum(p, dim=1, keepdim=True)

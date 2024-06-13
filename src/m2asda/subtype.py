@@ -15,6 +15,19 @@ from .model import GeneratorWithMemory, Subtyper
 from .configs import SubtypeConfigs
 
 
+class KLLoss(nn.Module):
+    def __init__(self, epsilon: float = 1e-6):
+        super().__init__()
+        self.epsilon = epsilon
+    
+    def kld(self, target, pred):
+        log_frac = torch.log(target/(pred + self.epsilon))
+        return torch.mean(torch.sum(target*log_frac, dim=1))
+    
+    def forward(self, p, q):
+        return self.kld(p, q)
+
+
 class SubtypeModel:
     # List attributes
     n_epochs: int
@@ -52,6 +65,8 @@ class SubtypeModel:
         self.opt_S = optim.Adam(self.S.parameters(), lr=self.learning_rate, 
                                 betas=(0.5, 0.999), weight_decay=self.weight_decay)
         self.sch_S = CosineAnnealingLR(self.opt_S, self.n_epochs)
+
+        self.loss = KLLoss().to(self.device)
     
     def train(self, adata: ad.AnnData):
         data = torch.Tensor(adata.X).to(self.device)
@@ -70,7 +85,22 @@ class SubtypeModel:
                 for z_data, res_data in self.loader:
                     z_data = z_data.to(self.device)
                     res_data = res_data.to(self.device)
+                    _, q = self.S(z_data, res_data)
+                    p = self.S.target_distribution(q).data
 
+                    self.opt_S.zero_grad()
+                    loss = self.loss(p, q)
+                    loss.backward()
+                    self.opt_S.step()
+
+                t.set_postfix(Loss = loss.item())
+                t.update(1)
+                self.sch_S.step()
+        
+        with torch.no_grad():
+            self.S.eval()
+            _, q = self.S(z, res)
+            return q
 
     @torch.no_grad()
     def generate_z_res(self, data: torch.Tensor):
