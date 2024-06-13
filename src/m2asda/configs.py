@@ -77,7 +77,7 @@ class PairConfigs:
         self.device = select_device(self.GPU)
 
         self.loss_weight = {
-            'alpha': self.alpha, 'beta': self.beta, 'gamma': self.gamma, 'lambda': self.lamb
+            'alpha': self.alpha, 'beta': self.beta, 'lambda': self.lamb
         }
 
         self.d_configs = {
