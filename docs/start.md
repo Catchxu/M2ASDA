@@ -1,16 +1,16 @@
-STANDS is a powerful documentation framework to detect, align and subtyping anomalous tissue domains across multiple samples. In the subsequent sections, we will introduce the preparatory tasks before utilizing STANDS for your research, including the installation of Python packages, downloading of datasets, and other related procedures.
+Detecting and identifying anomalous single cells from single-cell datasets is crucial for understanding molecular heterogeneity in diseases and promoting precision medicine. No existing method unifies multimodal and multi-sample anomaly detection and identification, involving crucial tasks like anomaly detection, alignment, and annotation. We propose an innovative Generative Adversarial Network-based framework named Multimodal and Multi-sample Anomalous Single-cell Detection and Annotation (M2ASDA), integrating solutions of these crucial tasks into a unified framework. Comprehensive tests on real datasets demonstrate M2ASDA's superior performance in anomaly detection, multi-sample alignment, and identifying common and specific cell types across multiple target datasets.
 
 
 
 
 ## Installation
-STANDS is developed as a Python package. You will need to install Python, and the recommended version is Python 3.9.5.
+M2ASDA is developed as a Python package. You will need to install Python, and the recommended version is Python 3.9.
 
 You can download the package from GitHub and install it locally:
 
 ```commandline
-git clone https://github.com/Catchxu/STANDS.git
-cd STANDS/
+git clone https://github.com/Catchxu/M2ASDA.git
+cd M2ASDA/
 python3 setup.py install
 ```
 
@@ -24,8 +24,7 @@ All experimental datasets involved in this paper are available from their respec
 
 
 ## Getting help
-Please see the tutorial for more complete documentation of all the functions of STANDS. For any questions or comments, please use the [GitHub issues](https://github.com/Catchxu/STANDS/issues) or
-directly contact Wenlin Li at the email: kaichenxu358@gmail.com.
+Please see the tutorial for more complete documentation of all the functions of STANDS. For any questions or comments, please use the [GitHub issues](https://github.com/Catchxu/M2ASDA/issues) or directly contact Kaichen Xu at the email: kaichenxu358@gmail.com.
 
 
 
@@ -48,17 +47,10 @@ directly contact Wenlin Li at the email: kaichenxu358@gmail.com.
 
 ## Dependencies
 - anndata>=0.10.7
-- dgl>=2.1.0
-- networkx>=3.2.1
 - numpy>=1.22.4
 - pandas>=1.5.1
-- Pillow>=9.4.0
-- PuLP>=2.7.0
-- pyemd>=1.0.0
-- rpy2>=3.5.13
 - scanpy>=1.10.1
 - scikit_learn>=1.2.0
 - scipy>=1.11.4
 - torch>=2.0.0
-- torchvision>=0.15.1
 - tqdm>=4.64.1

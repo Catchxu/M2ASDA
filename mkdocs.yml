@@ -1,9 +1,9 @@
-site_name: STANDS
-site_url: https://Catchxu.github.io/STANDS/
+site_name: M2ASDA
+site_url: https://Catchxu.github.io/M2ASDA/
 site_author: Kaichen Xu
-copyright: Copyright &copy; 2023 Kaichen Xu
+copyright: Copyright &copy; 2024 Kaichen Xu
 repo_name: Catchxu/STANDS
-repo_url: https://github.com/Catchxu/STANDS
+repo_url: https://github.com/Catchxu/M2ASDA
 
 nav:
   - Home: 
