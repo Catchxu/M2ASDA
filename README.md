@@ -13,7 +13,6 @@ Detecting and identifying anomalous single cells from single-cell datasets is cr
 - anndata>=0.10.7
 - numpy>=1.22.4
 - pandas>=1.5.1
-- rpy2>=3.5.13
 - scanpy>=1.10.1
 - scikit_learn>=1.2.0
 - scipy>=1.11.4
