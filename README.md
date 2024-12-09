@@ -32,6 +32,22 @@ python3 setup.py install
 ```
 
 
+## Getting Started
+M2ASDA offers a variety of functionalities, including but not limited to: 
+- Identify cancerous domains in single ST dataset ([tutorial](https://catchxu.github.io/STANDS/tutorial/SingleAD/))
+- Identify cancerous domains across multiple ST datasets concurrently ([tutorial](https://catchxu.github.io/STANDS/tutorial/MultiAD/))
+- Align multiple ST datasets sharing identical domain types ([tutorial](https://catchxu.github.io/STANDS/tutorial/ShareBC/))
+- Align multiple ST datasets with non-overlapping domain types ([tutorial](https://catchxu.github.io/STANDS/tutorial/AnoBC/))
+- Discern biologically distinct anomalous tissue subdomains in single ST datasets ([tutorial](https://catchxu.github.io/STANDS/tutorial/SingleAS/))
+- Discern biologically distinct anomalous tissue subdomains across multiple ST datasets ([tutorial](https://catchxu.github.io/STANDS/tutorial/MultiAS/))
+
+Before starting the tutorial, we need to make some preparations, including: installing M2ASDA and its required Python packages, downloading the datasets required for the tutorial, and so on. The preparations is available at [M2ASDA Preparations](https://catchxu.github.io/M2ASDA/start/). Additionally, we strongly recommend using a GPU and pretraining M2ASDA on the public single-cell datasets. More useful and helpful information can be found at the [online documentation](https://Catchxu.github.io/M2ASDA/).
+
+
+## Datasets
+All experimental datasets involved in this paper are available from their respective original sources. The 10x scRNA-seq datasets of healthy human lung tissues (10xG-hHL) and human lung cancer tissues (10xG-hLC-A and -B) are available at [GSE196303](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE196303). The 10x scRNA-seq dataset of mouse embryo (10xG-mEmb) is available at [GSE186069](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE186069). The 10x scRNA-seq datasets of healthy human peripheral blood mononuclear cells (10xG-hHPBMC), and 10x scATAC-seq datasets of healthy and basal cell carcinoma human peripheral blood mononuclear cells (10xC-hHPBMC, and 10xC-hPBMCBCC) are available at [10x Genomics](https://www.10xgenomics.com/datasets). The 10x scRNA-seq datasets of human systemic lupus erythematosus peripheral blood mononuclear cells (10xG-hPBMCSLE-A, -B, and -C) are available at [GSE96583](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE96583). The Slide-seqV2 datasets of mouse embryo (ssq-mEmb-33) are available at [GSE197353](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE197353).
+
+
 ## Tested environment
 ### Environment 1
 - CPU: Intel(R) Xeon(R) Platinum 8255C CPU @ 2.50GHz

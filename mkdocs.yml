@@ -10,7 +10,6 @@ nav:
     - Home: index.md
     - Preparations: start.md
     - License: license.md
-  - API Reference: reference/
   - Tutorials:
     - Overview: tutorial/overview.md
     - Pretrain: tutorial/Pretrain.ipynb
