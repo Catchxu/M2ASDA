@@ -22,7 +22,7 @@ M2ASDA is an innovative framework built on a suite of specialized Generative Adv
 
 
 ## Source codes
-All the source codes of M2ASDA are available on [GitHub](https://github.com/Catchxu/STANDS). We also provide [API documentation](https://catchxu.github.io/M2ASDA/reference/stands/) to help you understand the code and functionality of M2ASDA.
+All the source codes of M2ASDA are available on [GitHub](https://github.com/Catchxu/M2ASDA).
 
 
 

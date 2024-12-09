@@ -12,7 +12,7 @@ setup(
     long_description_content_type='text/markdown',
     author='Kaichen Xu',
     author_email='Kaichenxu@stu.zuel.edu.cn',
-    url='https://github.com/Catchxu/STANDS',
+    url='https://github.com/Catchxu/M2ASDA',
     license='GPL v3',
     classifiers=[
         "Programming Language :: Python :: 3",
