@@ -103,6 +103,7 @@ class MemoryBlock(nn.Module):
         return x
 
     def forward(self, x):
+        self.mem = self.mem.to(x.device)
         att_weight = torch.mm(x, self.mem.T)
         att_weight = F.softmax(att_weight/self.temperature, dim=1)
 

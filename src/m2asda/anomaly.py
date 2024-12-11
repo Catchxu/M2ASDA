@@ -23,7 +23,7 @@ class AnomalyModel:
     learning_rate: float
     n_critic: int
     loss_weight: Dict[str, int]
-    device: torch.device
+    # device: torch.device
     random_state: int
     n_genes: int
     g_configs: Dict[str, Any]
@@ -32,6 +32,7 @@ class AnomalyModel:
 
     def __init__(self, **kwargs):
         configs = AnomalyConfigs()
+        configs.build()
 
         # Update configs with kwargs
         for key, value in kwargs.items():
@@ -92,7 +93,7 @@ class AnomalyModel:
                 self.sch_G.step()
                 self.sch_D.step()
         
-        tqdm.write('Training has been finished.\n')
+        tqdm.write('Training process has been finished.')
 
     def predict(self, tgt: ad.AnnData, run_gmm: bool = True):
         self.check(tgt)
@@ -105,7 +106,7 @@ class AnomalyModel:
         ref_score = self.score(self.loader)
         tgt_score = self.score(loader)
 
-        tqdm.write('Anomalous spots have been detected.\n')
+        tqdm.write('Anomalous spots have been detected.')
 
         if run_gmm:
             gmm = GMMWithPrior(ref_score, **self.gmm_configs)
@@ -184,6 +185,9 @@ class AnomalyModel:
 
 
 if __name__ == '__main__':
+    import warnings
+    warnings.filterwarnings("ignore")
+
     parser = argparse.ArgumentParser(description="M2ASDA for anomaly detection.")
     configs = AnomalyConfigs()
 
@@ -227,6 +231,7 @@ if __name__ == '__main__':
     ref = sc.read_h5ad(args_dict['ref_path'])
     tgt = sc.read_h5ad(args_dict['tgt_path'])
 
+    print("=============== AnomalyModel Training ===============")
     # Initialize and train AnomalyModel
     model = AnomalyModel(**configs.__dict__)
     model.train(ref)
@@ -238,7 +243,9 @@ if __name__ == '__main__':
         score = model.predict(tgt, False)
         df = pd.DataFrame({'score': score}, index=tgt.obs_names)
     
-    df.to_csv(args_dict['save_path'])
+    result_path = args_dict['result_path']
+    df.to_csv(result_path)
+    print(f'Prediction result have been saved at {result_path}!')
 
     if args_dict['pth_path'] is not None:
         torch.save(model.G, args_dict['pth_path'])
