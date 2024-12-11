@@ -196,7 +196,7 @@ if __name__ == '__main__':
     data_group.add_argument('--ref_path', type=str, help='Path to read the reference h5ad file')
     data_group.add_argument('--tgt_path', type=str, help='Path to read the target h5ad file')
     data_group.add_argument('--result_path', type=str, default='result.csv', help='Path to save the output csv file')
-    data_group.add_argument('--pth_path', type=Optional[str], default=None, help='Path to save the trained generator')
+    data_group.add_argument('--pth_path', type=str, default=None, help='Path to save the trained generator')
 
     # AnomalyModel arguments with defaults from AnomalyConfigs
     a_group = parser.add_argument_group('AnomalyModel Parameters')
@@ -231,6 +231,7 @@ if __name__ == '__main__':
     ref = sc.read_h5ad(args_dict['ref_path'])
     tgt = sc.read_h5ad(args_dict['tgt_path'])
 
+    print("\n")
     print("=============== AnomalyModel Training ===============")
     # Initialize and train AnomalyModel
     model = AnomalyModel(**configs.__dict__)
@@ -242,10 +243,15 @@ if __name__ == '__main__':
     else:
         score = model.predict(tgt, False)
         df = pd.DataFrame({'score': score}, index=tgt.obs_names)
-    
+
+    print("\n")
+    print("=============== Result Saving ===============")
     result_path = args_dict['result_path']
     df.to_csv(result_path)
-    print(f'Prediction result have been saved at {result_path}!')
+    print(f'Prediction result has been saved at {result_path}!')
 
     if args_dict['pth_path'] is not None:
-        torch.save(model.G, args_dict['pth_path'])
+        pth_path = args_dict['pth_path']
+        torch.save(model.G, pth_path)
+        print(f'Generator has been saved at {pth_path}!')
+

@@ -3,7 +3,7 @@ from .utils import select_device
 
 class AnomalyConfigs:
     def __init__(self):
-        self.n_epochs = 50
+        self.n_epochs = 30
         self.batch_size = 256
         self.learning_rate = 1e-4
         self.n_critic = 2

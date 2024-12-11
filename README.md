@@ -33,13 +33,9 @@ python3 setup.py install
 
 
 ## Getting Started
-M2ASDA offers a variety of functionalities, including but not limited to: 
-- Identify cancerous domains in single ST dataset ([tutorial](https://catchxu.github.io/STANDS/tutorial/SingleAD/))
-- Identify cancerous domains across multiple ST datasets concurrently ([tutorial](https://catchxu.github.io/STANDS/tutorial/MultiAD/))
-- Align multiple ST datasets sharing identical domain types ([tutorial](https://catchxu.github.io/STANDS/tutorial/ShareBC/))
-- Align multiple ST datasets with non-overlapping domain types ([tutorial](https://catchxu.github.io/STANDS/tutorial/AnoBC/))
-- Discern biologically distinct anomalous tissue subdomains in single ST datasets ([tutorial](https://catchxu.github.io/STANDS/tutorial/SingleAS/))
-- Discern biologically distinct anomalous tissue subdomains across multiple ST datasets ([tutorial](https://catchxu.github.io/STANDS/tutorial/MultiAS/))
+M2ASDA offers a variety of functions for single-cell omics data analysis, and all these functions can be implemented through both python package and terminal commands. Here, we provide the detailed tutorials as follows:
+- Detecting anomalous cells with M2ASDA package ([tutorial](https://catchxu.github.io/M2ASDA/tutorial/Anomaly/))
+- Running M2ASDA to detect anomalous cells in terminal ([tutorial](https://catchxu.github.io/M2ASDA/tutorial/Anomaly_T/))
 
 Before starting the tutorial, we need to make some preparations, including: installing M2ASDA and its required Python packages, downloading the datasets required for the tutorial, and so on. The preparations is available at [M2ASDA Preparations](https://catchxu.github.io/M2ASDA/start/). Additionally, we strongly recommend using a GPU and pretraining M2ASDA on the public single-cell datasets. More useful and helpful information can be found at the [online documentation](https://Catchxu.github.io/M2ASDA/).
 

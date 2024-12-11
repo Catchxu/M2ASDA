@@ -12,13 +12,8 @@ nav:
     - License: license.md
   - Tutorials:
     - Overview: tutorial/overview.md
-    - Pretrain: tutorial/Pretrain.ipynb
-    - SingleAD: tutorial/SingleAD.ipynb
-    - MultiAD: tutorial/MultiAD.ipynb
-    - SharedBC: tutorial/ShareBC.ipynb
-    - AnoBC: tutorial/AnoBC.ipynb
-    - SingleAS: tutorial/SingleAS.ipynb
-    - MultiAS: tutorial/MultiAS.ipynb
+    - Anomaly: tutorial/Anomaly.ipynb
+    - Anomaly_T: tutorial/Anomaly_T.ipynb
 
 theme:
     name: "material"

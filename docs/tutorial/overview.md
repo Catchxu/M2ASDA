@@ -1,15 +1,9 @@
-STANDS offers a variety of functionalities, including but not limited to: region anomaly detection on spatial transcriptome slices, multi-sample batch correction, detection of anomalous subdomains, and combinations of these functionalities. Here, we will provide a brief overview of these main features to help you quickly understand STANDS.
-
+M2ASDA offers a variety of functionalities for single-cell omics data analysis, including but not limited to: 1) detecting anomalous cells 2) aligning multi-sample batch cells 3) subtyping anomalous cells across multi-batch. Additionally, all the functions can be implemented through both python package and terminal commands.
 
 ## Preparations before tutorials
-Before starting the tutorial, we need to make some preparations, including: installing STANDS and its required Python packages, downloading the datasets required for the tutorial, and so on. The preparations is available at [STANDS Preparations](../start.md). Additionally, when dealing with multimodal data structures involving both images and gene expression matrices, we strongly recommend using a GPU and pretraining STANDS on large-scale public spatial transcriptomics datasets. This ensures faster execution of STANDS and improved performance in modules related to image feature extraction and feature fusion.
+Before starting the tutorial, we need to make some preparations, including: installing M2ASDA and its required Python packages, downloading the datasets required for the tutorial, and so on. The preparations is available at [M2ASDA Preparations](../start.md). Additionally, when dealing with multimodal data structures involving large gene expression matrices, we strongly recommend using a GPU to train M2ASDA for faster execution.
 
 
 ## Outline of tutorials
-- [Tutorial 0: Pretrain STANDS basic extractor](./Pretrain.ipynb)
-- [Tutorial 1: Identify cancerous domains in single ST dataset](./SingleAD.ipynb)
-- [Tutorial 2: Identify cancerous domains across multiple ST datasets concurrently](./MultiAD.ipynb)
-- [Tutorial 3: Align multiple ST datasets sharing identical domain types](./ShareBC.ipynb)
-- [Tutorial 4: Align multiple ST datasets with non-overlapping domain types](./AnoBC.ipynb)
-- [Tutorial 5: Discern biologically distinct anomalous tissue subdomains in single ST datasets](./SingleAS.ipynb)
-- [Tutorial 6: Discern biologically distinct anomalous tissue subdomains across multiple ST datasets](./MultiAS.ipynb)
+- [Tutorial 1: Detecting anomalous cells with M2ASDA package](./Anomaly.ipynb)
+- [Tutorial 2: Running M2ASDA to detect anomalous cells in terminal](./Anomaly_T.ipynb)
